@@ -115,7 +115,7 @@ int main() {
     if (is_symbol) {
         exit(EXIT_FAILURE);
     }
-    printf("%s %d%%\n", symbol, percent);
+    printf("%s %d%% \n", symbol, percent);
     exit(EXIT_SUCCESS);
 }
 
