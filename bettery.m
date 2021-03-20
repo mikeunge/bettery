@@ -2,12 +2,7 @@
 #include <IOKit/ps/IOPowerSources.h>
 #include <IOKit/ps/IOPSKeys.h>
 
-int get_symbol(int *status, int *percent, char *symbol) {
-    // If there is no battery, there is no symbol.
-    if (status < 0) {
-        strcpy(symbol, "");
-        return 1;
-    }
+int get_symbol(int *percent, char *symbol) {
     switch(*percent) {
         case 0 ... 9:
             strcpy(symbol, "");
@@ -46,10 +41,7 @@ int get_symbol(int *status, int *percent, char *symbol) {
             strcpy(symbol, "");
             break;
     }
-    if (*status > 0) {
-        strncat(symbol, "", 4);
-    }
-    return 0;
+    return 1;
 }
 
 static int get_battery_info(bool *has_battery, bool *charging) {
@@ -98,24 +90,31 @@ int main() {
     int status = 0;
     char *symbol = NULL;
 
-    symbol = malloc(8);
+    symbol = malloc(4);
     if (!symbol) {
         NSLog(@"error: could not assign memory");
         exit(EXIT_FAILURE);
     }
+
     int percent = get_battery_info(&has_battery, &charging);
     if (!has_battery) {
-        status = -1;
+        strcpy(symbol, "");
+        exit(EXIT_SUCCESS);
     }
     if (charging) {
         status = 1;
     } 
 
-    int is_symbol = get_symbol(&status, &percent, symbol);
-    if (is_symbol) {
+    int is_symbol = get_symbol(&percent, symbol);
+    if (!is_symbol) {
         exit(EXIT_FAILURE);
+    } else {
+        // add a lightning symbol if battery is being charged
+        if (status > 0) {
+            strncat(symbol, "", 4);
+        }
     }
+
     printf("%s %d%% \n", symbol, percent);
     exit(EXIT_SUCCESS);
 }
-
