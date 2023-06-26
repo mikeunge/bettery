@@ -1,3 +1,5 @@
+# THIS REPO GOT MERGED INTO [scripts](https://github.com/mikeunge/Scripts)
+
 # bettery 🔌
 
 Small battery status for the command-line - ⚠️ Mac OS only ⚠️
